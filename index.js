@@ -273,6 +273,118 @@ const updateEmployeeRole = () => {
 };
 
 
+//DELETE
+
+
+//Create a function to delete roles, it will prompt the user with the roles avaliable to delete.
+function deleteRole() {
+    //Select all roles from the role table
+    connection.query('SELECT * FROM role', (err, data) => {
+        if (err) throw err;
+
+        //check id there are roless to delete
+        if (data.length === 0) {
+            console.log("No roles found. Nothing to delete.");
+            startPrompt();
+            return;
+        }
+
+        const role = data.map(({ title, id }) => ({ name: title, value: id }));
+
+        //prompt the users with which role they want to delete
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'role',
+                message: "What role do you want to delete?",
+                choices: role
+            }
+        ]).then((roleChoice) => {
+            connection.query('DELETE FROM role WHERE id = ?', roleChoice.role, (err, result) => {
+                if (err) throw err;
+                viewAllRoles();
+            });
+        }).catch((err) => {
+            console.error("Error deleting role:", err);
+        });
+    });
+}
+
+//Create a function to delete departments, it will prompt the user with the departments avaliable to delete.
+function deleteDepartment() {
+
+    //Select all roles from the department table
+    connection.query('SELECT * FROM department', (err, data) => {
+        if (err) throw err;
+
+        //check if there are departments to delete
+        if (data.length === 0) {
+            console.log("No departments found. Nothing to delete.");
+            startPrompt();
+            return;
+        }
+
+        const dept = data.map(({ name, id }) => ({ name: name, value: id }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'dept',
+                message: "What department do you want to delete?",
+                choices: dept
+            }
+        ]).then((deptChoice) => {
+            connection.query('DELETE FROM department WHERE id = ?', deptChoice.dept, (err, result) => {
+                if (err) throw err;
+                viewAllDepartments();
+            });
+        }).catch((err) => {
+            console.error("Error deleting department:", err);
+        });
+    });
+}
+
+
+
+
+
+
+//Create a function to delete employees, it will prompt the user with the employees avaliable to delete.
+function deleteEmployee() {
+    connection.query('SELECT * FROM employee', (err, data) => {
+        if (err) throw err;
+
+        //check if tthere are employees to delete
+        if (data.length === 0) {
+            console.log("No employees found. Nothing to delete.");
+            startPrompt();
+            return;
+        }
+
+        const employees = data.map(({ id, first_name, last_name }) => ({
+            name: first_name + " " + last_name,
+            value: id
+        }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'name',
+                message: "Which employee would you like to delete?",
+                choices: employees
+            }
+        ]).then((empChoice) => {
+            connection.query('DELETE FROM employee WHERE id = ?', empChoice.name, (err, result) => {
+                if (err) throw err;
+                console.log("Employee deleted successfully!");
+                viewAllEmployees();
+            });
+        }).catch((err) => {
+            console.error("Error deleting employee:", err);
+        });
+    });
+}
+
 
 //Start to prompt the questions
 startPrompt();
