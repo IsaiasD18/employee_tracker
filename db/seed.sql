@@ -3,8 +3,8 @@ USE employee_tracker;
 INSERT INTO department (name) VALUES 
     ('Sales');
 
-INSERT INTO role (title, salary) VALUES 
-    ('Sales Lead', 100000);
+INSERT INTO role (title, salary, department_id) VALUES 
+    ('Sales Lead', 100000, 1);
 
 INSERT INTO employee (
     first_name, 
